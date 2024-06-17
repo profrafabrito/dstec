@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body onload="iniciar()">
+	<h1>Exclusão de Cliente</h1>
+	<div>
+		<input type="hidden" id="id" name="" value="">
+		Nome<br>
+		<input type="text" id="nome" name="" value="" disabled><br>
+		E-mail<br>
+		<input type="email" id="email" name="" value="" disabled><br><br>
+		<input type="button" id="confirmar" value="Confirmar" onclick="excluir()" name="">
+		<input type="button" id="cancelar" value="Cancelar" onclick="inicio()" name="">
+	</div>
+    <br>
+	Mensagem:
+	<div id="resultado"></div>
+</body>
+</html>
+
+<script type="text/javascript">
+
+	function iniciar(){
+		var url = new URLSearchParams(window.location.search);
+		var id = url.get("id");
+		//console.log("Id do Cliente: "+id);
+		var xmlhttp = new XMLHttpRequest();
+		dados = JSON.stringify({id:id});
+		xmlhttp.onload = function(){
+			//console.log(this.responseText);
+			tabela = JSON.parse(this.responseText);
+            for (registro of tabela){ 
+                //console.log(registro);
+                document.getElementById('id').value = registro.id;
+                document.getElementById('nome').value = registro.nome;
+                document.getElementById('email').value = registro.email;
+            }
+		}
+		xmlhttp.open("POST", "dadosCliente.php");
+		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.send("dados="+dados);
+	}
+
+    function inicio(){
+        window.location.href = "cliente.html";
+    }
+
+	function excluir() {
+		let id, xmlhttp, retorno, dados;
+		xmlhttp = new XMLHttpRequest();
+
+		id = document.getElementById('id').value;			
+		dados = JSON.stringify({id:id});
+		//console.log(dados);
+
+		xmlhttp.onload = function(){
+			document.getElementById('confirmar').type = "hidden";
+			document.getElementById('cancelar').value = "Voltar";
+			//console.log(this.responseText);
+			document.getElementById('resultado').innerHTML = this.responseText;
+		}
+		xmlhttp.open("POST", "excCliente.php");
+		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.send("dados="+dados);
+	}
+</script>

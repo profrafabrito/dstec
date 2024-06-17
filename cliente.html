@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+   <h1>Cliente</h1>
+	<div>	
+        Pesquisar: <input type="text" id="valor"><br><br>	
+		<input type="button" value="Pesquisa" onclick="executar()">
+		<br><br>
+		<a href='cadCliente.html'>Novo Cliente</a>		
+		<p id="resul"></p>
+        <a href='index.html'>Ir para o Início</a>		
+	</div>
+</body>
+
+<script type="text/javascript">
+	function executar(){	
+        //declaração	
+		var xmlhttp = new XMLHttpRequest();
+		let tabela,registro,saida,dados;
+        //entrada
+        dados = JSON.stringify({
+			           valor:document.getElementById('valor').value		               
+					});
+
+        //processamento
+		xmlhttp.onload = function() {
+			//console.log(this.responseText);	
+			tabela = JSON.parse(this.responseText);
+            saida = '<table border="1">';
+            saida += '<tr><th>ID</th>';
+            saida += '<th>Nome</th><th>E-Mail</th>';
+            saida += '<th colspan=2>Ações</th></tr>';
+            for (registro of tabela){                
+	  		    saida += '<tr><td>'+registro.id+'</td>';
+	  		    saida += '<td>'+registro.nome+'</td>';
+	  		    saida += '<td>'+registro.email+'</td>';
+	  		    saida += '<td><a href="altCliente.html?id='+registro.id+'">Alterar</a></td>'; 
+	  		    saida += '<td><a href="excCliente.html?id='+registro.id+'">Excluir</a></td></tr>';
+            }
+            saida += '</table>';
+
+            //saida
+            document.getElementById("resul").innerHTML = saida;
+            //console.log(document.getElementById("resul").innerHTML);         				
+		}
+		xmlhttp.open("POST", "cliente.php");
+		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.send("x="+dados);
+	}
+</script>
+</html>
